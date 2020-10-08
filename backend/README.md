@@ -72,6 +72,7 @@ Errors are returned as JSON objects in the following format:
 The API will return one error type when requests fail:
 - 520 Unknown error
 - 400 Bad request
+- 404 Not found
 ### Endpoints
 #### GET /questions
 - General:

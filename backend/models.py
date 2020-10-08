@@ -4,7 +4,9 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 
-def setup_db(app):
+def setup_db(app, database_path=None):
+    if database_path:
+        app.config["SQLALCHEMY_DATABASE_URI"] = database_path
     db.app = app
     db.init_app(app)
     db.create_all()

@@ -12,6 +12,7 @@ app.config.from_object('config')
 setup_db(app)
 questions_per_page = 10
 total_questions = Question.query.count()
+max_page = total_questions / 10
 CORS(app)
 
 
@@ -22,7 +23,17 @@ def questions():
         starting from the (page * questions_per_page(default 10) - questions_per_page(default 10))
         ending after questions_per_page limit is reached
     """
-    start = request.args['page'] * questions_per_page - questions_per_page
+    page = request.args['page']
+
+    if page > max_page:
+        return jsonify({
+            'success': False,
+            'status': 404,
+            'reason': f'the submitted page number {page} is greater than the maximum number of pages {max_page}',
+            'message': 'resource not found'
+        })
+
+    start = page * questions_per_page - questions_per_page
     question_list = [question.format() for question in Question.query.offset(start).limit(questions_per_page).all()]
     category_list = []
 
