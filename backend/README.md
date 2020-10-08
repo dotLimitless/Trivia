@@ -8,7 +8,7 @@
 
 Follow instructions to install the latest version of python for your platform in the [python docs](https://docs.python.org/3/using/unix.html#getting-and-installing-the-latest-version-of-python)
 
-#### Virtual Enviornment
+#### Virtual Environment
 
 We recommend working within a virtual environment whenever using Python for projects. This keeps your dependencies for each project separate and organaized. Instructions for setting up a virual enviornment for your platform can be found in the [python docs](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/)
 
@@ -52,44 +52,6 @@ Setting the `FLASK_ENV` variable to `development` will detect file changes and r
 
 Setting the `FLASK_APP` variable to `flaskr` directs flask to use the `flaskr` directory and the `__init__.py` file to find the application. 
 
-## Tasks
-
-One note before you delve into your tasks: for each endpoint you are expected to define the endpoint and response data. The frontend will be a plentiful resource because it is set up to expect certain endpoints and response data formats already. You should feel free to specify endpoints in your own way; if you do so, make sure to update the frontend or you will get some unexpected behavior. 
-
-1. Use Flask-CORS to enable cross-domain requests and set response headers. 
-2. Create an endpoint to handle GET requests for questions, including pagination (every 10 questions). This endpoint should return a list of questions, number of total questions, current category, categories. 
-3. Create an endpoint to handle GET requests for all available categories. 
-4. Create an endpoint to DELETE question using a question ID. 
-5. Create an endpoint to POST a new question, which will require the question and answer text, category, and difficulty score. 
-6. Create a POST endpoint to get questions based on category. 
-7. Create a POST endpoint to get questions based on a search term. It should return any questions for whom the search term is a substring of the question. 
-8. Create a POST endpoint to get questions to play the quiz. This endpoint should take category and previous question parameters and return a random questions within the given category, if provided, and that is not one of the previous questions. 
-9. Create error handlers for all expected errors including 400, 404, 422 and 500. 
-
-REVIEW_COMMENT
-```
-This README is missing documentation of your endpoints. Below is an example for your endpoint to get all categories. Please use it as a reference for creating your documentation and resubmit your code. 
-
-Endpoints
-GET '/categories'
-GET ...
-POST ...
-DELETE ...
-
-GET '/categories'
-- Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
-- Request Arguments: None
-- Returns: An object with a single key, categories, that contains a object of id: category_string key:value pairs. 
-{'1' : "Science",
-'2' : "Art",
-'3' : "Geography",
-'4' : "History",
-'5' : "Entertainment",
-'6' : "Sports"}
-
-```
-
-
 ## Testing
 To run the tests, run
 ```
@@ -98,3 +60,213 @@ createdb trivia_test
 psql trivia_test < trivia.psql
 python test_flaskr.py
 ```
+
+## API Reference
+### Getting Started
+- Base URL: At present this app can only be run locally and is not hosted as a base URL. The backend app is hosted at the default, `http://127.0.0.1:5000/`, which is set as proxy in the frontend configuration.
+- Authentication: This version of the application does not require authentication or API keys.
+### Error Handling
+Errors are returned as JSON objects in the following format:
+```json
+{
+    "success": false,
+    "error": 520,
+    "reason": "Duplicate entry 'foobar' for key 'question'",
+    "message": "An error occurred, question could not be stored"
+}
+```
+The API will return one error type when requests fail:
+- 520 Unknown error
+- 400 Bad request
+### Endpoints
+#### GET /questions
+- General:
+    - Returns a list of question objects, total number of questions, a list of category objects, and a success value.
+    - Results are paginated in groups of 10. Include a request argument to choose page number, starting from 1.
+- Sample `curl http://127.0.0.1:5000/questions?page=2`
+```json
+{
+    "success": true,
+    "questions": [{
+        "id": 11,
+        "question": "what is the gravity of earth",
+        "answer": "9.807 m/s²",
+        "category": "physics",
+        "difficulty": 1
+    },
+    {
+        "id": 12,
+        "question": "what is the gravity of earth",
+        "answer": "9.807 m/s²",
+        "category": "physics",
+        "difficulty": 1
+    },
+    {
+        "id": 13,
+        "question": "what is the gravity of earth",
+        "answer": "9.807 m/s²",
+        "category": "physics",
+        "difficulty": 1
+    },
+    {
+        "id": 14,
+        "question": "what is the gravity of earth",
+        "answer": "9.807 m/s²",
+        "category": "physics",
+        "difficulty": 1
+    },
+    {
+        "id": 15,
+        "question": "what is the gravity of earth",
+        "answer": "9.807 m/s²",
+        "category": "physics",
+        "difficulty": 1
+    },
+    {
+        "id": 16,
+        "question": "what is the gravity of earth",
+        "answer": "9.807 m/s²",
+        "category": "physics",
+        "difficulty": 1
+    },
+    {
+        "id": 17,
+        "question": "what is the gravity of earth",
+        "answer": "9.807 m/s²",
+        "category": "physics",
+        "difficulty": 1
+    },
+    {
+        "id": 18,
+        "question": "what is the gravity of earth",
+        "answer": "9.807 m/s²",
+        "category": "physics",
+        "difficulty": 1
+    },
+    {
+        "id": 19,
+        "question": "what is the gravity of earth",
+        "answer": "9.807 m/s²",
+        "category": "physics",
+        "difficulty": 1
+    },
+    {
+        "id": 20,
+        "question": "what is the gravity of earth",
+        "answer": "9.807 m/s²",
+        "category": "physics",
+        "difficulty": 1
+    }],
+    "total_questions": 30,
+    "categories": [{
+        "id": 1,
+        "type": "any"
+    },
+    {
+        "id": 2,
+        "type": "Art"
+    }],
+    "current_category": "any"
+}
+```
+#### POST /questions
+- General:
+    - Creates a new question using the submitted question, answer, category(optional), difficulty. Returns a success value.
+- Sample `curl http://127.0.0.1:5000/questions`
+```json
+{
+    "success": true
+}
+```
+#### POST /questions/search
+- General:
+    - Returns a list of question objects that contains the submitted search term, total number of questions, current category, and a success value.
+- Sample `curl http://127.0.0.1:5000/questions/search`
+```json
+{
+    "success": true,
+    "questions": [
+        {
+            "question": "what is the best source of a very good quality courses",
+            "answer":  "udacity",
+            "category": "any",
+            "difficulty": 1
+        },
+        {
+            "question": "what is the gravity of earth",
+            "answer":  "at udacity",
+            "category": "any",
+            "difficulty": 1
+        }],
+    "total_questions": 30,
+    "current_category": "any"
+}
+```
+#### DELETE /questions/\<int:question_id>
+- General:
+    - Delete a question with the give id.
+    - Returns a success value.
+- Sample `curl http://127.0.0.1:5000/questions/1`
+```json
+{
+    "success": true
+}
+```
+#### GET /categories
+- General:
+    - Returns a list of category objects, success value.
+- Sample `curl http://127.0.0.1:5000/categories`
+```json
+{
+    "success": true,
+    "categories":  [{
+        "id": 1,
+        "type": "Art"
+    },
+    {
+        "id": 2,
+        "type": "Science"
+    },
+    {
+        "id": 3,
+        "type": "Entertainment"
+    }]
+}
+```
+#### GET /categories/\<int:category_id>/questions
+- General:
+    - Returns a success value, list of question objects that are in the specified category id, total questions, current category.
+- Sample `curl http://127.0.0.1:5000/categories/\<int:category_id>/questions`
+```json
+{
+    "success": true,
+    "questions": [{
+            "question": "what is the best source of a very good quality courses",
+            "answer":  "udacity",
+            "category": "any",
+            "difficulty": 1
+        },
+        {
+            "question": "what is the gravity of earth",
+            "answer":  "at udacity",
+            "category": "any",
+            "difficulty": 1
+        }],
+    "total_questions": 30,
+    "current_category": "Art"
+}
+```
+#### POST /quizzes
+```json
+{
+    "success": true,
+    "question": {
+        "question": "what is the best source of a very good quality courses",
+        "answer":  "udacity",
+        "category": "any",
+        "difficulty": 1
+    }
+}
+```
+## Author
+dotLimitless <3
