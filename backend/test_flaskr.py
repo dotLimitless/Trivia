@@ -41,6 +41,12 @@ class TriviaTestCase(unittest.TestCase):
         self.assertIsNotNone(data['total_questions'])
         self.assertIsNotNone(data['current_category'])
 
+    def test_get_questions_fail(self):
+        result = self.client().get('/questions?page=999')
+        self.assertEqual(result.status_code, 404)
+        data = json.loads(result.data)
+        self.assertEqual(data['success'], False)
+
     def test_create_question(self):
         result = self.client().post('/questions', json={
             'question': 'what is the best source of a very good quality courses',
@@ -52,7 +58,18 @@ class TriviaTestCase(unittest.TestCase):
         data = json.loads(result.data)
         self.assertEqual(data['success'], True)
 
-    def test_search_question(self):
+    def test_create_question_fail(self):
+        result = self.client().post('/questions', json={
+            'question': 'what is the best source of a very good quality courses',
+            'answer': 'udacity',
+            'category': '999',
+            'difficulty': 1
+        })
+        self.assertEqual(result.status_code, 400)
+        data = json.loads(result.data)
+        self.assertEqual(data['success'], False)
+
+    def test_search_questions(self):
         result = self.client().post('questions/search', json={
             'searchTerm': 'what'
         })
@@ -63,12 +80,26 @@ class TriviaTestCase(unittest.TestCase):
         self.assertIsNotNone(data['total_questions'])
         self.assertIsNotNone(data['current_category'])
 
+    def test_search_questions_fail(self):
+        result = self.client().post('questions/search', json={
+            'searchTerm': '999'
+        })
+        self.assertEqual(result.status_code, 404)
+        data = json.loads(result.data)
+        self.assertEqual(data['success'], False)
+
     def test_delete_question(self):
         question = Question.query.first()
         result = self.client().delete(f'/questions/{question.id}')
         self.assertEqual(result.status_code, 200)
         data = json.loads(result.data)
         self.assertEqual(data['success'], True)
+
+    def test_delete_question_fail(self):
+        result = self.client().delete(f'/questions/9999')
+        self.assertEqual(result.status_code, 500)
+        data = json.loads(result.data)
+        self.assertEqual(data['success'], False)
 
     def test_get_categories(self):
         result = self.client().get('/categories')
@@ -86,11 +117,35 @@ class TriviaTestCase(unittest.TestCase):
         self.assertIsNotNone(data['total_questions'])
         self.assertIsNotNone(data['current_category'])
 
+    def test_get_questions_by_category_fail(self):
+        result = self.client().get('/categories/999/questions')
+        self.assertEqual(result.status_code, 404)
+        data = json.loads(result.data)
+        self.assertEqual(data['success'], False)
+
     def test_post_quizzes(self):
-        result = self.client().get('/categories')
+        question = Question.query.first()
+        result = self.client().post('/quizzes', json={
+            'previous_questions': [question.id],
+            'quiz_category': {
+                'id': question.category,
+            }
+        })
         self.assertEqual(result.status_code, 200)
         data = json.loads(result.data)
         self.assertEqual(data['success'], True)
+
+    def test_post_quizzes_fail(self):
+        result = self.client().post('/quizzes', json={
+            'previous_questions': [999],
+            'quiz_category': {
+                'id': 999,
+                'type': 'Fake'
+            }
+        })
+        self.assertEqual(result.status_code, 404)
+        data = json.loads(result.data)
+        self.assertEqual(data['success'], False)
 
 
 # Make the tests conveniently executable

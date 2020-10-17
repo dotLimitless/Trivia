@@ -79,7 +79,11 @@ def search_question():
     """
     data = request.get_json()
     questions_list = Question.query.filter(func.lower(Question.question).contains(func.lower(data['searchTerm']))).all()
+
     result = [question.format() for question in questions_list]
+
+    if not len(result):
+        abort(404)
 
     category = ''
 
@@ -105,7 +109,7 @@ def delete_question(question_id: int):
     try:
         question.delete()
         total_questions -= 1
-    except SQLAlchemyError as e:
+    except (SQLAlchemyError, AttributeError) as e:
         db.session.rollback()
         abort(500)
     finally:
@@ -137,6 +141,10 @@ def questions_by_category(category_id: int):
         - current category type
     """
     category = Category.query.get(category_id)
+
+    if not category:
+        abort(404)
+
     value = [question.format() for question in
              Question.query.filter(Question.category == str(category.id)).all()]
     current_category = category.type
@@ -159,6 +167,9 @@ def quizze():
 
     question = Question.query.filter(Question.category == str(data['quiz_category']['id'])) \
         .filter(~Question.id.in_(prev_questions)).order_by(func.random()).first()
+
+    if not question:
+        abort(404)
 
     return jsonify({
         'success': True,
