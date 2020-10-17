@@ -49,7 +49,11 @@ def store_question():
     data = request.get_json()
     category = data.get('category')
 
-    if not Category.query.filter(Category.id == int(category)).first():
+    if 'question' not in data or\
+       'answer' not in data or\
+       'category' not in data or\
+       'difficulty' not in data or\
+       not Category.query.filter(Category.id == int(category)).first():
         abort(400)
 
     question = Question(
@@ -106,10 +110,13 @@ def delete_question(question_id: int):
     global total_questions
     question = Question.query.get(question_id)
 
+    if not question:
+        abort(404)
+
     try:
         question.delete()
         total_questions -= 1
-    except (SQLAlchemyError, AttributeError) as e:
+    except SQLAlchemyError as e:
         db.session.rollback()
         abort(500)
     finally:
