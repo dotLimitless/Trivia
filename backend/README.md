@@ -64,15 +64,14 @@ Errors are returned as JSON objects in the following format:
 ```json
 {
     "success": false,
-    "error": 520,
-    "reason": "Duplicate entry 'foobar' for key 'question'",
-    "message": "An error occurred, question could not be stored"
+    "error": 400,
+    "message": "Bad Request"
 }
 ```
 The API will return one error type when requests fail:
-- 520 Unknown error
-- 400 Bad request
-- 404 Not found
+- 500 Internal Server Error
+- 400 Bad Request
+- 404 Not Found
 ### Endpoints
 #### GET /questions
 - General:

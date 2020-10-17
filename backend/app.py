@@ -1,7 +1,6 @@
-import math
-
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from flask_restful import abort
 from sqlalchemy import func
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -23,34 +22,21 @@ def questions():
         starting from the (page * questions_per_page(default 10) - questions_per_page(default 10))
         ending after questions_per_page limit is reached
     """
-    page = request.args['page']
+    page = int(request.args['page'])
 
     if page > max_page:
-        return jsonify({
-            'success': False,
-            'status': 404,
-            'reason': f'the submitted page number {page} is greater than the maximum number of pages {max_page}',
-            'message': 'resource not found'
-        })
+        abort(404)
 
     start = page * questions_per_page - questions_per_page
     question_list = [question.format() for question in Question.query.offset(start).limit(questions_per_page).all()]
-    category_list = []
-
-    for question in question_list:
-        category_list.append(Category.query.filter(Category.type == question.category).first())
-
-    current_category = ''
-
-    if category_list[0]:
-        current_category = category_list[0].type
+    category_list = get_categories()
 
     return jsonify({
         'success': True,
         'questions': question_list,
         'total_questions': total_questions,
         'categories': category_list,
-        'current_category': current_category
+        'current_category': ''
     })
 
 
@@ -61,15 +47,10 @@ def store_question():
     """
     global total_questions
     data = request.get_json()
-    category = data.get('category', 'any')
+    category = data.get('category')
 
-    if not Category.query.filter(Category.type == category).first():
-        return jsonify({
-            'success': False,
-            'error': 400,
-            'reason': f'Category {category} was not found',
-            'message': 'An error occurred, question could not be stored'
-        })
+    if not Category.query.filter(Category.id == int(category)).first():
+        abort(400)
 
     question = Question(
         question=data['question'],
@@ -82,13 +63,7 @@ def store_question():
         total_questions += 1
     except SQLAlchemyError as e:
         db.session.rollback()
-
-        return jsonify({
-            'success': False,
-            'error': 520,
-            'reason': e.args,
-            'message': 'An error occurred, question could not be stored'
-        })
+        abort(500)
     finally:
         db.session.close()
 
@@ -103,14 +78,13 @@ def search_question():
         returns all questions that contains the given word
     """
     data = request.get_json()
-    result = [question.format() for question in
-              Question.query.filter(
-                  func.lower(Question.question).contains(func.lower(data['searchTerm']))).all()]
+    questions_list = Question.query.filter(func.lower(Question.question).contains(func.lower(data['searchTerm']))).all()
+    result = [question.format() for question in questions_list]
 
     category = ''
 
     if result[0]:
-        category = result[0].category
+        category = result[0]['category']
 
     return jsonify({
         'success': True,
@@ -133,13 +107,7 @@ def delete_question(question_id: int):
         total_questions -= 1
     except SQLAlchemyError as e:
         db.session.rollback()
-
-        return jsonify({
-            'success': False,
-            'error': 520,
-            'reason': e.args,
-            'message': 'An error occurred, question could not be deleted'
-        })
+        abort(500)
     finally:
         db.session.close()
 
@@ -153,11 +121,10 @@ def categories():
     """
         returns all categories in the database
     """
-    result = [category.format() for category in Category.query.all()]
 
     return jsonify({
         'success': True,
-        'categories': result
+        'categories': get_categories()
     })
 
 
@@ -171,18 +138,14 @@ def questions_by_category(category_id: int):
     """
     category = Category.query.get(category_id)
     value = [question.format() for question in
-             Question.query.filter(Question.category == category.type).all()]
-
-    current_category = ''
-
-    if category:
-        current_category = category.type
+             Question.query.filter(Question.category == str(category.id)).all()]
+    current_category = category.type
 
     return jsonify({
         'success': True,
         'questions': value,
         'total_questions': total_questions,
-        'current_category ': current_category
+        'current_category': current_category
     })
 
 
@@ -193,14 +156,45 @@ def quizze():
     """
     data = request.get_json()
     prev_questions = data['previous_questions']
-    category = data['quiz_category']
-    question = Question.query.filter(Question.category == category) \
-        .filter(Question.question != prev_questions).order_by(func.random()).first()
+
+    question = Question.query.filter(Question.category == str(data['quiz_category']['id'])) \
+        .filter(~Question.id.in_(prev_questions)).order_by(func.random()).first()
 
     return jsonify({
         'success': True,
-        'question': question
+        'question': question.format() if question else None
     })
+
+
+def get_categories():
+    return [category.format() for category in Category.query.all()]
+
+
+@app.errorhandler(404)
+def not_found(error):
+    return jsonify({
+        "success": False,
+        "error": 404,
+        "message": "Not Found"
+    }), 404
+
+
+@app.errorhandler(500)
+def not_found(error):
+    return jsonify({
+        "success": False,
+        "error": 500,
+        "message": "Internal Server Error"
+    }), 500
+
+
+@app.errorhandler(400)
+def not_found(error):
+    return jsonify({
+        "success": False,
+        "error": 400,
+        "message": "Bad Request"
+    }), 400
 
 
 if __name__ == '__main__':
