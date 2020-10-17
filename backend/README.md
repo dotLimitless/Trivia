@@ -154,13 +154,13 @@ The API will return one error type when requests fail:
     "total_questions": 30,
     "categories": [{
         "id": 1,
-        "type": "any"
+        "type": null
     },
     {
         "id": 2,
         "type": "Art"
     }],
-    "current_category": "any"
+    "current_category": null
 }
 ```
 #### POST /questions
@@ -183,17 +183,17 @@ The API will return one error type when requests fail:
         {
             "question": "what is the best source of a very good quality courses",
             "answer":  "udacity",
-            "category": "any",
+            "category": null,
             "difficulty": 1
         },
         {
             "question": "what is the gravity of earth",
             "answer":  "at udacity",
-            "category": "any",
+            "category": null,
             "difficulty": 1
         }],
     "total_questions": 30,
-    "current_category": "any"
+    "current_category": null
 }
 ```
 #### DELETE /questions/\<int:question_id>
@@ -237,13 +237,13 @@ The API will return one error type when requests fail:
     "questions": [{
             "question": "what is the best source of a very good quality courses",
             "answer":  "udacity",
-            "category": "any",
+            "category": null,
             "difficulty": 1
         },
         {
             "question": "what is the gravity of earth",
             "answer":  "at udacity",
-            "category": "any",
+            "category": null,
             "difficulty": 1
         }],
     "total_questions": 30,
@@ -257,7 +257,7 @@ The API will return one error type when requests fail:
     "question": {
         "question": "what is the best source of a very good quality courses",
         "answer":  "udacity",
-        "category": "any",
+        "category": null,
         "difficulty": 1
     }
 }
