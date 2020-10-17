@@ -85,82 +85,82 @@ The API will return one error type when requests fail:
         "id": 11,
         "question": "what is the gravity of earth",
         "answer": "9.807 m/s²",
-        "category": "physics",
+        "category": "2",
         "difficulty": 1
     },
     {
         "id": 12,
         "question": "what is the gravity of earth",
         "answer": "9.807 m/s²",
-        "category": "physics",
+        "category": "2",
         "difficulty": 1
     },
     {
         "id": 13,
         "question": "what is the gravity of earth",
         "answer": "9.807 m/s²",
-        "category": "physics",
+        "category": "2",
         "difficulty": 1
     },
     {
         "id": 14,
         "question": "what is the gravity of earth",
         "answer": "9.807 m/s²",
-        "category": "physics",
+        "category": "2",
         "difficulty": 1
     },
     {
         "id": 15,
         "question": "what is the gravity of earth",
         "answer": "9.807 m/s²",
-        "category": "physics",
+        "category": "2",
         "difficulty": 1
     },
     {
         "id": 16,
         "question": "what is the gravity of earth",
         "answer": "9.807 m/s²",
-        "category": "physics",
+        "category": "2",
         "difficulty": 1
     },
     {
         "id": 17,
         "question": "what is the gravity of earth",
         "answer": "9.807 m/s²",
-        "category": "physics",
+        "category": "2",
         "difficulty": 1
     },
     {
         "id": 18,
         "question": "what is the gravity of earth",
         "answer": "9.807 m/s²",
-        "category": "physics",
+        "category": "2",
         "difficulty": 1
     },
     {
         "id": 19,
         "question": "what is the gravity of earth",
         "answer": "9.807 m/s²",
-        "category": "physics",
+        "category": "2",
         "difficulty": 1
     },
     {
         "id": 20,
         "question": "what is the gravity of earth",
         "answer": "9.807 m/s²",
-        "category": "physics",
+        "category": "2",
         "difficulty": 1
     }],
     "total_questions": 30,
     "categories": [{
         "id": 1,
-        "type": "any"
+        "type": "Art"
     },
     {
         "id": 2,
-        "type": "Art"
+        "type": "Science"
     }],
-    "current_category": "any"
+    "current_category": null
 }
 ```
 #### POST /questions
@@ -183,17 +183,17 @@ The API will return one error type when requests fail:
         {
             "question": "what is the best source of a very good quality courses",
             "answer":  "udacity",
-            "category": "any",
+            "category": null,
             "difficulty": 1
         },
         {
             "question": "what is the gravity of earth",
             "answer":  "at udacity",
-            "category": "any",
+            "category": null,
             "difficulty": 1
         }],
     "total_questions": 30,
-    "current_category": "any"
+    "current_category": null
 }
 ```
 #### DELETE /questions/\<int:question_id>
@@ -237,13 +237,13 @@ The API will return one error type when requests fail:
     "questions": [{
             "question": "what is the best source of a very good quality courses",
             "answer":  "udacity",
-            "category": "any",
+            "category": null,
             "difficulty": 1
         },
         {
             "question": "what is the gravity of earth",
             "answer":  "at udacity",
-            "category": "any",
+            "category": null,
             "difficulty": 1
         }],
     "total_questions": 30,
@@ -257,7 +257,7 @@ The API will return one error type when requests fail:
     "question": {
         "question": "what is the best source of a very good quality courses",
         "answer":  "udacity",
-        "category": "any",
+        "category": null,
         "difficulty": 1
     }
 }
