@@ -31,5 +31,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "description": "This project depends on Nodejs and Node Package Manager (NPM). Before continuing, you must download and install Node (the download includes NPM) from [https://nodejs.com/en/download](https://nodejs.org/en/download/).",
+  "main": "index.js",
+  "devDependencies": {},
+  "author": "AhmedAlzubaidi",
+  "license": "ISC"
 }

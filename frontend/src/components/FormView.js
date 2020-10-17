@@ -11,7 +11,7 @@ class FormView extends Component {
       answer: "",
       difficulty: 1,
       category: 1,
-      categories: {}
+      categories: []
     }
   }
 
@@ -20,6 +20,10 @@ class FormView extends Component {
       url: `/categories`, //TODO: update request URL
       type: "GET",
       success: (result) => {
+        for(let i = 0; i < 5; i++) {
+          const category = result.categories[i];
+          console.log(`category id(${category['id']}) type(${category['type']})`);
+        }
         this.setState({ categories: result.categories })
         return;
       },
@@ -89,11 +93,9 @@ class FormView extends Component {
           <label>
             Category
             <select name="category" onChange={this.handleChange}>
-              {Object.keys(this.state.categories).map(id => {
-                  return (
-                    <option key={id} value={id}>{this.state.categories[id]}</option>
-                  )
-                })}
+              {this.state.categories.map((category) => (
+                <option key={category.id} value={category.type}>{category.type}</option>
+              ))}
             </select>
           </label>
           <input type="submit" className="button" value="Submit" />
